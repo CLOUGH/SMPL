@@ -55,26 +55,6 @@ public class Evaluator implements Visitor {
 	return null;
     }
 
-   
-
-    public Object visitExpRect(ExpRect exp, Object arg) throws Exception
-    {
-	int x, y, hgt, wid;
-	Graphics g = jframe.getGraphics();
-		
-	//Exp canv;
-        x = (Integer) exp.getX().visit(this, arg);
-	y = (Integer) exp.getY().visit(this, arg);
-        //canv = exp.getCanvas();
-        //hgt = (Integer) canv.getWidth().visit(this, arg);
-        //wid = (Integer) canv.getHeight().visit(this, arg);
-        //visitExpCanvas(canv, arg);
-        g.drawRect(10,10,20,40);
-        jframe.validate();
-        jframe.repaint();
-        jframe.getContentPane().repaint();
-	return null;
-    }
 
     public Object visitStatement(Statement s, Object arg)
 	throws Exception
@@ -728,9 +708,9 @@ public class Evaluator implements Visitor {
         hgt = (Integer) canv.getExpL().visit(this, arg);
         wid = (Integer) canv.getExpR().visit(this, arg);
         
-        frame.setSize(new Dimension(wid, hgt));
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setVisible(true);
+        jframe.setSize(new Dimension(wid, hgt));
+        jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        jframe.setVisible(true);
         JPanel panel = new JPanel() {
             public void paintComponent(Graphics g) {
                 super.paintComponent(g);
@@ -738,9 +718,9 @@ public class Evaluator implements Visitor {
             }
         };
         
-        frame.add(panel);
-        frame.validate();
-        frame.repaint();
+        jframe.add(panel);
+        jframe.validate();
+        jframe.repaint();
         return null;
     }
 }
