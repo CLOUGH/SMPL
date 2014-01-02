@@ -16,7 +16,7 @@ import javax.swing.*;
 public class Evaluator implements Visitor {
     
     protected Object result;	
-    JFrame jframe;
+    JFrame jframe =new JFrame();;
     public Evaluator() {
 	
 		result = null;
@@ -716,6 +716,32 @@ public class Evaluator implements Visitor {
 		
 		String val = exp.getString();
 		return val;
+    }
+    public Object visitExpRect(ExpRect exp, Object arg) throws Exception
+    {
+        final int x, y, hgt, wid;
+        x = (Integer) exp.getX().visit(this, arg);
+        y = (Integer) exp.getY().visit(this, arg);
+        ExpPair canv = (ExpPair) exp.getCanvas();
+        
+        
+        hgt = (Integer) canv.getExpL().visit(this, arg);
+        wid = (Integer) canv.getExpR().visit(this, arg);
+        
+        frame.setSize(new Dimension(wid, hgt));
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setVisible(true);
+        JPanel panel = new JPanel() {
+            public void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                g.drawRect(x,y,wid,hgt);
+            }
+        };
+        
+        frame.add(panel);
+        frame.validate();
+        frame.repaint();
+        return null;
     }
 }
 
