@@ -2,21 +2,21 @@ JFLEX_PATH = lib/JFlex.jar
 CUP_PATH = lib/java-cup.jar
  
 cup:
-	@java -cp $(CUP_PATH) java_cup.Main -parser Parser < Test2/Parser.cup
-	@mv sym.java Test2
-	@mv Parser.java Test2/
+	@java -cp $(CUP_PATH) java_cup.Main -parser Parser < src/Parser.cup
+	@mv sym.java src
+	@mv Parser.java src/
  
 jflex:
-	@jflex Test2/Lexer
+	@jflex src/Lexer.jflex
  
 compile:
-	@javac -cp "Test:lib/java-cup.jar:lib/JFlex.jar" Test2/*.java
+	@javac -cp "src:lib/java-cup.jar:lib/JFlex.jar" src/*.java
 
 fcompile:
-	@javac -cp "Test2:lib/java-cup.jar:lib/JFlex.jar" -Xlint:unchecked Test2/*.java
+	@javac -cp "src:lib/java-cup.jar:lib/JFlex.jar" -Xlint:unchecked src/*.java
 
 run:
-	@java -cp "Test2:$(CUP_PATH)" Repl
+	@java -cp "src:$(CUP_PATH)" Repl
 
 
 

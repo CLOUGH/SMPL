@@ -1,0 +1,279 @@
+/*  Stewart, Ricardo
+    Campbell, Shane
+	Clough, Warren
+	Miller, Sean  */
+
+import java.io.*;
+import java.util.*;
+import java_cup.runtime.*;
+
+parser code {:
+		Lexer lexer;
+
+		InputStream in = null;
+
+		public Parser(InputStream is) {
+	        	in = is;
+		}
+
+		public void report_error(String message, Object info) {
+		    System.err.println(message);
+		}
+
+		public void syntax_error(Symbol cur_token) {
+		    System.err.print("Line " + lexer.getLine() +
+				     " near char " + lexer.getChar() + ": ");
+		    report_error("Syntax error", cur_token);
+		    System.err.println ("Last token read is " +
+					 lexer.getText());
+		}
+	    :};
+
+init with {:
+		// Create a lexer that reads from
+		// supplied input stream or standard input
+		if (in == null)
+		   in = System.in;
+		lexer = new Lexer(in);
+	  :};
+scan with {:
+		try {
+		    return lexer.next_token();
+		} catch (java.io.IOException ioe) {
+		    System.out.println ("Unrecognised token");
+		    System.out.println(ioe.getMessage());
+		    throw ioe;
+		}
+	  :};
+
+/* Arithmetic operators */
+terminal PLUS, MINUS, MUL, DIV, MOD;
+
+/* Bitwise operators */
+terminal BITAND, BITOR, BITNOT;
+
+/* Relational operators */
+terminal EQUAL, GREATER, LESS, LESSEQ, GREATEREQ, NOTEQ;
+
+/* Logical operators */
+terminal AND, OR, NOT;
+
+
+/* List concatenation */
+terminal CONCAT;
+
+
+terminal ASSIGN;
+
+/* Keywords */
+terminal PROC, CALL, LAZY, LET, DEF, IF, THEN, ELSE, CASE, PRINT, PRINTLN, READ, READINT;
+
+/* Special command keywords */
+terminal PAIR, CAR, CDR, PAIRQ, LIST, SIZE, EQVQ, EQUALQ, SUBSTR;
+
+
+/*Graphical keywords */
+terminal CANVAS, PT, RECT, CIRCLE, PATH, CPATH, CLEAR, SETFG, SETBG;
+
+/* Blocks, Comma, Colon and Semicolon */
+terminal LPAREN, RPAREN, RBRACE, LBRACE, LCURL, RCURL, SEMICOL, COLON, COMMA;
+
+
+/* terminals with values */
+terminal Double DOUBLE;
+terminal Integer INTEGER;
+terminal String VARIABLE;
+terminal String BOOLEAN;
+terminal String BIN;
+terminal String HEX;
+terminal String STRING;
+
+
+/* Non terminals */
+non terminal ArithProgram program;
+non terminal StmtSequence stmtList;
+non terminal Statement stmt;
+non terminal Statement stmts;
+non terminal StmtDefinition definition;
+non terminal ExpSequence expressionList;
+non terminal ExpSequence argList;
+non terminal Exp expression;
+non terminal Exp expressions;
+non terminal Exp lastexp;
+non terminal Exp statement;
+non terminal Exp ifstat;
+non terminal Exp term;
+non terminal Exp factor;
+non terminal CaseSequence caseList;
+non terminal Case case;
+non terminal empty;
+non terminal Exp builtin;
+non terminal BindSequence bindlist;
+non terminal LetDef letdfn;
+non terminal Exp procDef;
+non terminal Exp procCall;
+non terminal Exp single;
+non terminal Exp i;
+non terminal Exp g;
+non terminal Exp h;
+non terminal Exp j;
+non terminal Exp k;
+non terminal Exp e;
+non terminal ArrayList paramList;
+
+
+
+/* Grammar rules */
+
+program ::= stmtList:s {:RESULT = new ArithProgram(s);  :};
+
+stmtList ::= stmtList:lst stmts:s {:
+		lst.add(s);
+		RESULT = lst;
+		:} |
+	     stmts:s {:
+		RESULT = new StmtSequence(s);
+		:};
+
+
+stmts ::= stmt:s SEMICOL{:RESULT = s;:};
+
+
+stmt ::= definition:d {:RESULT = d;:} |
+	 expression:e  {: RESULT = new Statement(e); :}|
+	 statement:s {:RESULT = new Statement(s);:};
+
+definition ::= DEF VARIABLE:v stmt:e {:RESULT = new StmtDefinition(v, e);:}  |
+               VARIABLE:v ASSIGN expression:e {:RESULT = new StmtDefinition(v, e);:};
+
+bindlist ::= letdfn:b {:RESULT = new BindSequence(b);:} | bindlist:lst COMMA letdfn:b {:lst.add(b);
+                      RESULT = lst;:};
+
+
+statement ::= ifstat:ifst{:RESULT = ifst;:}
+                |LET LPAREN bindlist:lst RPAREN stmt:e {:RESULT = new ExpLet(lst,e);:}
+
+		|CASE LCURL caseList:lst RCURL {:RESULT = lst;:}
+                |PRINT LPAREN stmt:e RPAREN {:RESULT = new ExpPrint(e);:}
+                |PRINTLN LPAREN stmt:e RPAREN {:RESULT = new ExpPrintLn(e);:}
+                |procDef:pd {:RESULT = pd;:}
+                |procCall:pc{:RESULT = pc;:} 
+		|CANVAS LPAREN expression:e1 COMMA expression:e2 RPAREN {: RESULT = new ExpCanvas(e1,e2); :}
+		|PT LPAREN expression:e1 COMMA expression:e2 RPAREN {: RESULT = null; :}
+		|RECT LPAREN expression:e1 COMMA expression:e2 COMMA expression:e3 RPAREN {: RESULT = new ExpRect(e1,e2,e3); :}
+		|CIRCLE LPAREN expression:e1 COMMA expression:e2 COMMA expression:e3 RPAREN {: RESULT = null; :}
+//{: RESULT = new ExpCircle(e1,e2,e3); :};
+		|PATH LPAREN expression:e1 COMMA expression:e2 RPAREN {: RESULT = null; :}
+                |CPATH LPAREN expression:e1 COMMA expression:e2 RPAREN {: RESULT = null; :}
+		|CLEAR LPAREN expression:e RPAREN {: RESULT = null; :}
+		|SETFG LPAREN expression:e1 COMMA expression:e2 RPAREN {: RESULT = null; :}
+		|SETBG LPAREN expression:e1 COMMA expression:e2 RPAREN {: RESULT = null; :};
+
+procCall ::= LPAREN procDef:pd RPAREN LPAREN argList:lst RPAREN {:RESULT = new ProcCall(pd,lst);:}
+                |VARIABLE:v LPAREN argList:lst RPAREN {:RESULT = new VarProcCall(v,lst);:}|
+                CALL LPAREN expression:e COMMA argList:lst RPAREN {:RESULT = new SMPLCall(e,lst);:};
+
+argList ::= argList:lst COMMA  stmt:e
+                    {:lst.add(e);
+                      RESULT = lst;:}|
+                    stmt:e {:RESULT = new ExpSequence(e);:} ;
+
+procDef ::= PROC LPAREN paramList:lst RPAREN LCURL stmt:e RCURL {:RESULT = new ProcDef(lst,e);:};
+
+
+paramList ::= paramList:params COMMA VARIABLE:v {:
+		params.add(v);
+		RESULT = params;:}
+		| VARIABLE:v {:
+		ArrayList lst = new ArrayList();
+                lst.add(v);
+                RESULT = lst;:};
+
+caseList ::= caseList:lst case:c {:
+		lst.add(c);
+		RESULT = lst;
+		:} |
+	     case:c {:
+		RESULT = new CaseSequence(c);
+		:};
+case ::= expression:p COLON expression:c {:RESULT = new Case(p,c);:}|ELSE COLON expression:c{:RESULT = new Case(new ExpBool("#t"),c);:};
+
+ifstat ::= IF expression:ifExp THEN expression:thenExp {: RESULT = new ExpIf(ifExp,thenExp);:} | IF expression:ifExp THEN expression:thenExp ELSE expression:elseExp {: RESULT = new ExpIfElse(ifExp,thenExp,elseExp);:};
+
+
+expressionList ::= expressionList:lst  expressions:e
+                    {:lst.add(e);
+                      RESULT = lst;:}|
+                    expressions:e {:RESULT = new ExpSequence(e);:} ;
+
+expressions ::= expression:e COMMA {: RESULT = e; :};
+
+
+
+expression ::= expression:e OR k:k {: RESULT = new ExpOr(e,k);:} | k:k {: RESULT = k;:};
+
+k ::= k:k AND j:j {: RESULT = new ExpAnd(k,j);:} | j:j {: RESULT = j;:};
+
+j ::= NOT i:i {: RESULT = new ExpNot(i);:} | i:i {: RESULT = i;:};
+
+i ::= h:lh NOTEQ h:rh {: RESULT = new ExpNotEq(lh,rh);:}|
+       h:h {: RESULT = h;:};
+
+h ::= g:lg EQUAL g:rg {: RESULT = new ExpEqual(lg,rg);:} |
+       g:lg GREATER g:rg {: RESULT = new ExpGreater(lg,rg);:} |
+       g:lg LESS g:rg {: RESULT = new ExpLess(lg,rg);:} |
+       g:lg GREATEREQ g:rg {: RESULT = new ExpGreaterEq(lg,rg);:} |
+       g:lg LESSEQ g:rg {: RESULT = new ExpLessEq(lg,rg);:} |
+       g:g {: RESULT = g;:};
+
+g ::= g BITAND e |
+       g BITOR e  |
+       e:e {: RESULT = e;:} ;
+
+e ::= 	e:e PLUS term:t {:
+            RESULT = new ExpAdd(e, t); :} |
+	e:e MINUS term:t {:
+            RESULT = new ExpSub(e, t); :} |
+	term:t {: RESULT = t; :};
+
+term ::= term:t MUL factor:f {:
+		RESULT = new ExpMul(t, f); :} |
+	 term:t DIV factor:f {:
+		RESULT = new ExpDiv(t, f); :} |
+	 term:t MOD factor:f {:
+		RESULT = new ExpMod(t, f); :} |
+	 factor:f {: RESULT = f; :};
+
+factor ::= factor BITNOT single |
+           single:a {: RESULT = a; :};
+
+single ::= INTEGER:ilit {: RESULT = new ExpLit(ilit); :} |
+	   VARIABLE:var {: RESULT = new ExpVar(var); :} |
+	   BOOLEAN:b {: RESULT = new ExpBool(b); :}|
+           LCURL expressionList:lst RCURL {: RESULT = lst; :}|
+           BIN:b{: RESULT = new SMPLBinary(b); :}|
+           HEX:h{: RESULT = new SMPLHex(h); :}|
+           builtin:b{: RESULT = b; :}|
+           STRING:s{: RESULT = new ExpString(s); :};
+
+builtin ::= PAIR LPAREN expression:e1 COMMA expression:e2 RPAREN {: RESULT = new ExpPair(e1,e2); :}|
+            CAR LPAREN expression:e RPAREN{: RESULT = new ExpCar(e); :}|
+            CDR LPAREN expression:e RPAREN{: RESULT = new ExpCdr(e); :}|
+	    LIST LPAREN expressionList:elist RPAREN {: RESULT = new ExpSequence(elist); :}	
+       |
+            PAIRQ LPAREN expression:e RPAREN{: RESULT = new ExpPairQ(e); :}|
+            EQVQ LPAREN expression:e1 COMMA expression:e2 RPAREN{: RESULT = new SMPLEqvQ(e1,e2); :}|
+            EQUALQ LPAREN expression:e1 COMMA expression:e2 RPAREN{: RESULT = new SMPLEqualQ(e1,e2); :};
+
+
+
+
+
+
+
+
+
+
+
+
+	
