@@ -165,7 +165,7 @@ fnum  = (-[0-9]+\.[0-9]+)|([0-9]+\.[0-9]+)|([0-9]+\.[0-9]*)|([0-9]*\.[0-9]+)
 <YYINITIAL> ":"    	{return new Symbol(sym.COLON);}
 <YYINITIAL> ","    	{return new Symbol(sym.COMMA);}
 
-<YYINITIAL>	"#"\\[0-9a-fA-F]+	{return new Symbol(sym.CHARACTER, new Character(yytext()));}
+//<YYINITIAL>	"#"\\[0-9a-fA-F]+	{return new Symbol(sym.CHARACTER, new Character(yytext()));}
 //Float
 <YYINITIAL>    {fnum}   {return new Symbol(sym.DOUBLE, new Double(yytext()));}
 
