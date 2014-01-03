@@ -129,6 +129,7 @@ fnum  = (-[0-9]+\.[0-9]+)|([0-9]+\.[0-9]+)|([0-9]+\.[0-9]*)|([0-9]*\.[0-9]+)
 <YYINITIAL>	"println"	{return new Symbol(sym.PRINTLN);}
 <YYINITIAL>	"read"		{return new Symbol(sym.READ);}
 <YYINITIAL>	"readint"	{return new Symbol(sym.READINT);}
+<YYINITIAL> "dynamic"	{ return new Symbol(sym.DYNAMIC); }
 
 /* Special command keywords */
 <YYINITIAL>	"pair"		{return new Symbol(sym.PAIR);}
@@ -170,6 +171,8 @@ fnum  = (-[0-9]+\.[0-9]+)|([0-9]+\.[0-9]+)|([0-9]+\.[0-9]*)|([0-9]*\.[0-9]+)
 
 //INTEGER
 <YYINITIAL>    [0-9]+ {return new Symbol(sym.INTEGER, new Integer(yytext()));}
+
+<YYINITIAL> \"([^\\\"]|\\.)*\"  { return new Symbol(sym.STRING, yytext().substring(1, yytext().length() - 1));}
 
 //VARIABLE
 <YYINITIAL>    {numbers}*{alpha}+{special}* {   return new Symbol(sym.VARIABLE, yytext()); }

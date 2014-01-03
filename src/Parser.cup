@@ -74,7 +74,7 @@ terminal ASSIGN;
 terminal PROC, CALL, LAZY, LET, DEF, IF, THEN, ELSE, CASE, PRINT, PRINTLN, READ, READINT;
 
 /* Special command keywords */
-terminal PAIR, CAR, CDR, PAIRQ, LIST, SIZE, EQVQ, EQUALQ, SUBSTR;
+terminal PAIR, CAR, CDR, PAIRQ, LIST, SIZE, EQVQ, EQUALQ, SUBSTR,DYNAMIC;
 
 
 /*Graphical keywords */
@@ -95,6 +95,7 @@ terminal String STRING;
 
 
 /* Non terminals */
+
 non terminal ArithProgram program;
 non terminal StmtSequence stmtList;
 non terminal Statement stmt;
@@ -144,35 +145,34 @@ stmtList ::= stmtList:lst stmts:s {:
 stmts ::= stmt:s SEMICOL{:RESULT = s;:};
 
 
-stmt ::= definition:d {:RESULT = d;:} |
-	 expression:e  {: RESULT = new Statement(e); :}|
-	 statement:s {:RESULT = new Statement(s);:};
+stmt 			::= definition:d 			{:RESULT = d;:} |
+					expression:e  			{: RESULT = new Statement(e); :}|
+					statement:s 			{:RESULT = new Statement(s);:};
 
-definition ::= DEF VARIABLE:v stmt:e {:RESULT = new StmtDefinition(v, e);:}  |
-               VARIABLE:v ASSIGN expression:e {:RESULT = new StmtDefinition(v, e);:};
+definition 		::=	DEF VARIABLE:v stmt:e 	{:RESULT = new StmtDefinition(v, e);:}  |
+              		VARIABLE:v ASSIGN expression:e {:RESULT = new StmtDefinition(v, e);:};
 
-bindlist ::= letdfn:b {:RESULT = new BindSequence(b);:} | bindlist:lst COMMA letdfn:b {:lst.add(b);
-                      RESULT = lst;:};
+bindlist 		::= letdfn:b {:RESULT = new BindSequence(b);:} |
+					bindlist:lst COMMA letdfn:b {:lst.add(b);RESULT = lst;:};
 
 
-statement ::= ifstat:ifst{:RESULT = ifst;:}
-                |LET LPAREN bindlist:lst RPAREN stmt:e {:RESULT = new ExpLet(lst,e);:}
-
-		|CASE LCURL caseList:lst RCURL {:RESULT = lst;:}
-                |PRINT LPAREN stmt:e RPAREN {:RESULT = new ExpPrint(e);:}
-                |PRINTLN LPAREN stmt:e RPAREN {:RESULT = new ExpPrintLn(e);:}
-                |procDef:pd {:RESULT = pd;:}
-                |procCall:pc{:RESULT = pc;:} 
-		|CANVAS LPAREN expression:e1 COMMA expression:e2 RPAREN {: RESULT = new ExpCanvas(e1,e2); :}
-		|PT LPAREN expression:e1 COMMA expression:e2 RPAREN {: RESULT = null; :}
-		|RECT LPAREN expression:e1 COMMA expression:e2 COMMA expression:e3 RPAREN {: RESULT = new ExpRect(e1,e2,e3); :}
-		|CIRCLE LPAREN expression:e1 COMMA expression:e2 COMMA expression:e3 RPAREN {: RESULT = null; :}
-//{: RESULT = new ExpCircle(e1,e2,e3); :};
-		|PATH LPAREN expression:e1 COMMA expression:e2 RPAREN {: RESULT = null; :}
-                |CPATH LPAREN expression:e1 COMMA expression:e2 RPAREN {: RESULT = null; :}
-		|CLEAR LPAREN expression:e RPAREN {: RESULT = null; :}
-		|SETFG LPAREN expression:e1 COMMA expression:e2 RPAREN {: RESULT = null; :}
-		|SETBG LPAREN expression:e1 COMMA expression:e2 RPAREN {: RESULT = null; :};
+statement 		::= ifstat:ifst{:RESULT = ifst;:}
+                	|LET LPAREN bindlist:lst RPAREN stmt:e {:RESULT = new ExpLet(lst,e);:}
+					|CASE LCURL caseList:lst RCURL {:RESULT = lst;:}
+                	|PRINT LPAREN stmt:e RPAREN {:RESULT = new ExpPrint(e);:}
+                	|PRINTLN LPAREN stmt:e RPAREN {:RESULT = new ExpPrintLn(e);:}
+                	|procDef:pd {:RESULT = pd;:}
+                	|procCall:pc{:RESULT = pc;:} 
+					|CANVAS LPAREN expression:e1 COMMA expression:e2 RPAREN {: RESULT = new ExpCanvas(e1,e2); :}
+					|PT LPAREN expression:e1 COMMA expression:e2 RPAREN {: RESULT = null; :}
+					|RECT LPAREN expression:e1 COMMA expression:e2 COMMA expression:e3 RPAREN {: RESULT = new ExpRect(e1,e2,e3); :}
+					|CIRCLE LPAREN expression:e1 COMMA expression:e2 COMMA expression:e3 RPAREN {: RESULT = null; :}
+					//{: RESULT = new ExpCircle(e1,e2,e3); :};
+					|PATH LPAREN expression:e1 COMMA expression:e2 RPAREN {: RESULT = null; :}
+                	|CPATH LPAREN expression:e1 COMMA expression:e2 RPAREN {: RESULT = null; :}
+					|CLEAR LPAREN expression:e RPAREN {: RESULT = null; :}
+					|SETFG LPAREN expression:e1 COMMA expression:e2 RPAREN {: RESULT = null; :}
+					|SETBG LPAREN expression:e1 COMMA expression:e2 RPAREN {: RESULT = null; :};
 
 procCall ::= LPAREN procDef:pd RPAREN LPAREN argList:lst RPAREN {:RESULT = new ProcCall(pd,lst);:}
                 |VARIABLE:v LPAREN argList:lst RPAREN {:RESULT = new VarProcCall(v,lst);:}|
