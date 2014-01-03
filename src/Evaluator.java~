@@ -13,10 +13,10 @@ import javax.swing.*;
 //import java.swing.JFrame;
 //import javax.swing.SwingUtilities;
 
-public class Evaluator implements Visitor {
+public class Evaluator implements Visitor, JFrame {
     
     protected Object result;	
-    JFrame jframe =new JFrame();;
+    JFrame jframe;
     public Evaluator() {
 	
 		result = null;
@@ -716,32 +716,6 @@ public class Evaluator implements Visitor {
 		
 		String val = exp.getString();
 		return val;
-    }
-    public Object visitExpRect(ExpRect exp, Object arg) throws Exception
-    {
-        final int x, y, hgt, wid;
-        x = (Integer) exp.getX().visit(this, arg);
-        y = (Integer) exp.getY().visit(this, arg);
-        ExpPair canv = (ExpPair) exp.getCanvas();
-        
-        
-        hgt = (Integer) canv.getExpL().visit(this, arg);
-        wid = (Integer) canv.getExpR().visit(this, arg);
-        
-        jframe.setSize(new Dimension(wid, hgt));
-        jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        jframe.setVisible(true);
-        JPanel panel = new JPanel() {
-            public void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                g.drawRect(x,y,wid,hgt);
-            }
-        };
-        
-        jframe.add(panel);
-        jframe.validate();
-        jframe.repaint();
-        return null;
     }
 }
 

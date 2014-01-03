@@ -16,7 +16,7 @@ import javax.swing.*;
 public class Evaluator implements Visitor {
     
     protected Object result;	
-    JFrame jframe =new JFrame();;
+    JFrame jframe;
     public Evaluator() {
 	
 		result = null;
@@ -55,6 +55,26 @@ public class Evaluator implements Visitor {
 	return null;
     }
 
+   
+
+    public Object visitExpRect(ExpRect exp, Object arg) throws Exception
+    {
+	int x, y, hgt, wid;
+	Graphics g = jframe.getGraphics();
+		
+	//Exp canv;
+        x = (Integer) exp.getX().visit(this, arg);
+	y = (Integer) exp.getY().visit(this, arg);
+        //canv = exp.getCanvas();
+        //hgt = (Integer) canv.getWidth().visit(this, arg);
+        //wid = (Integer) canv.getHeight().visit(this, arg);
+        //visitExpCanvas(canv, arg);
+        g.drawRect(10,10,20,40);
+        jframe.validate();
+        jframe.repaint();
+        jframe.getContentPane().repaint();
+	return null;
+    }
 
     public Object visitStatement(Statement s, Object arg)
 	throws Exception
@@ -696,32 +716,6 @@ public class Evaluator implements Visitor {
 		
 		String val = exp.getString();
 		return val;
-    }
-    public Object visitExpRect(ExpRect exp, Object arg) throws Exception
-    {
-        final int x, y, hgt, wid;
-        x = (Integer) exp.getX().visit(this, arg);
-        y = (Integer) exp.getY().visit(this, arg);
-        ExpPair canv = (ExpPair) exp.getCanvas();
-        
-        
-        hgt = (Integer) canv.getExpL().visit(this, arg);
-        wid = (Integer) canv.getExpR().visit(this, arg);
-        
-        jframe.setSize(new Dimension(wid, hgt));
-        jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        jframe.setVisible(true);
-        JPanel panel = new JPanel() {
-            public void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                g.drawRect(x,y,wid,hgt);
-            }
-        };
-        
-        jframe.add(panel);
-        jframe.validate();
-        jframe.repaint();
-        return null;
     }
 }
 
