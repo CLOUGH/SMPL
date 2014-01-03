@@ -713,6 +713,8 @@ public class Evaluator implements Visitor {
 
     public Object visitExpString(ExpString exp, Object arg) throws Exception
     {
+    	
+    	System.out.print("string working now");
 		
 		String val = exp.getString();
 		return val;

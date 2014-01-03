@@ -40,8 +40,7 @@ public class Evaluator implements Visitor {
     {
 	int wid, hgt;
 	jframe = new JFrame();
-
-        wid = (Integer) exp.getWidth().visit(this, arg);	
+    wid = (Integer) exp.getWidth().visit(this, arg);	
 	hgt = (Integer) exp.getHeight().visit(this, arg);
 	jframe.setSize(new Dimension(wid, hgt));
 	jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -713,10 +712,7 @@ public class Evaluator implements Visitor {
 
     public Object visitExpString(ExpString exp, Object arg) throws Exception
     {
-    	
-    	System.out.print("string working now");
-		
-		String val = exp.getString();
+    	String val = exp.getString();
 		return val;
     }
 }

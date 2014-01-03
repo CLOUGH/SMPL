@@ -162,10 +162,10 @@ fnum  = (-[0-9]+\.[0-9]+)|([0-9]+\.[0-9]+)|([0-9]+\.[0-9]*)|([0-9]*\.[0-9]+)
 <YYINITIAL>	"{"		{return new Symbol(sym.LCURL);}
 <YYINITIAL>	"}"		{return new Symbol(sym.RCURL);}
 <YYINITIAL>	";"		{return new Symbol(sym.SEMICOL);}
-<YYINITIAL>     ":"     	{return new Symbol(sym.COLON);}
-<YYINITIAL>     ","     	{return new Symbol(sym.COMMA);}
+<YYINITIAL> ":"    	{return new Symbol(sym.COLON);}
+<YYINITIAL> ","    	{return new Symbol(sym.COMMA);}
 
-
+<YYINITIAL>	"#"\\[0-9a-fA-F]+	{return new Symbol(sym.CHARACTER, new Character(yytext()));}
 //Float
 <YYINITIAL>    {fnum}   {return new Symbol(sym.DOUBLE, new Double(yytext()));}
 
@@ -175,5 +175,5 @@ fnum  = (-[0-9]+\.[0-9]+)|([0-9]+\.[0-9]+)|([0-9]+\.[0-9]*)|([0-9]*\.[0-9]+)
 <YYINITIAL> \"([^\\\"]|\\.)*\"  { return new Symbol(sym.STRING, yytext().substring(1, yytext().length() - 1));}
 
 //VARIABLE
-<YYINITIAL>    {numbers}*{alpha}+{special}* {   return new Symbol(sym.VARIABLE, yytext()); }
+<YYINITIAL>    ({numbers}|{alpha}|{special})+({numbers}*{alpha}+{special}*)* {   return new Symbol(sym.VARIABLE, yytext()); }
 	

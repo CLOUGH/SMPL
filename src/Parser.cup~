@@ -92,6 +92,7 @@ terminal String BOOLEAN;
 terminal String BIN;
 terminal String HEX;
 terminal String STRING;
+terminal Character CHARACTER;
 
 
 /* Non terminals */
