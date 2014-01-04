@@ -93,6 +93,7 @@ terminal String BIN;
 terminal String HEX;
 terminal String STRING;
 terminal String CHARACTER;
+terminal String HEX_CHARACTER;
 
 
 /* Non terminals */
@@ -257,15 +258,16 @@ term ::= term:t MUL factor:f {:
 factor ::= factor BITNOT single |
            single:a {: RESULT = a; :};
 
-single ::= INTEGER:ilit {: RESULT = new ExpLit(ilit); :} |
-	   VARIABLE:var {: RESULT = new ExpVar(var); :} |
-	   BOOLEAN:b {: RESULT = new ExpBool(b); :}|
-           LCURL expressionList:lst RCURL {: RESULT = lst; :}|
-           BIN:b{: RESULT = new SMPLBinary(b); :}|
-           HEX:h{: RESULT = new SMPLHex(h); :}|
-           builtin:b{: RESULT = b; :}|
-           STRING:s{: RESULT = new ExpString(s); :}|
-           CHARACTER:c{: RESULT = new ExpChar(c); :};
+single 		::= 	INTEGER:ilit 		{: RESULT = new ExpLit(ilit); :} |
+	   				VARIABLE:var 		{: RESULT = new ExpVar(var); :} |
+	   				BOOLEAN:b 			{: RESULT = new ExpBool(b); :}|
+           			LCURL expressionList:lst RCURL {: RESULT = lst; :}|
+           			BIN:b				{: RESULT = new SMPLBinary(b); :}|
+           			HEX:h				{: RESULT = new SMPLHex(h); :}|
+           			builtin:b			{: RESULT = b; :}|
+           			STRING:s			{: RESULT = new ExpString(s); :}|
+           			HEX_CHARACTER:hc	{: RESULT = new ExpChar(hc,true); :}|
+           			CHARACTER:c			{: RESULT = new ExpChar(c); :};
 
 builtin ::= PAIR LPAREN expression:e1 COMMA expression:e2 RPAREN {: RESULT = new ExpPair(e1,e2); :}|
             CAR LPAREN expression:e RPAREN{: RESULT = new ExpCar(e); :}|

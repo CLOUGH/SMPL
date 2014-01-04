@@ -710,29 +710,8 @@ public class Evaluator implements Visitor {
         return null;
     }
 
-	public Object visitExpChar(ExpChar exp, Object arg) throws Exception {
-		Character val = null;
-		
-		int length = exp.getChar().length();
-		
-		if (length == 3)
-		{
-			val = exp.getChar().charAt(2);
-		}
-		else if (length == 4)
-		{
-			String temp = "\\"+exp.getChar().substring(2,4);
-			int decoded = Integer.decode(temp);
-			val = (char)decoded;
-		}
-		else if (length == 6)
-		{
-			String temp = "0x"+exp.getChar().substring(2,6);
-			int decoded = Integer.decode(temp);
-			val = (char)decoded;
-		}
-	
-		//val = temp.charAt(2);
+	public Object visitExpChar(ExpChar exp, Object arg) throws Exception {	
+		Character val = exp.getChar();
 		return val;
 	}
     public Object visitExpString(ExpString exp, Object arg) throws Exception

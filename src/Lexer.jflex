@@ -61,8 +61,8 @@ comment = [^\r\n]
 
 nl = [\n\r]|\r\n
 
-special = ["!""#""?"".""*""+""-"]
 
+special = ["!""#""?"".""*""+""-"]
 fnum  = (-[0-9]+\.[0-9]+)|([0-9]+\.[0-9]+)|([0-9]+\.[0-9]*)|([0-9]*\.[0-9]+)
 
 %%
@@ -102,7 +102,8 @@ fnum  = (-[0-9]+\.[0-9]+)|([0-9]+\.[0-9]+)|([0-9]+\.[0-9]*)|([0-9]*\.[0-9]+)
 <YYINITIAL>	"or"	{return new Symbol(sym.OR);}
 <YYINITIAL>	"not"	{return new Symbol(sym.NOT);}
 
-<YYINITIAL>	"#"\\[0-9a-zA-Z]+	{return new Symbol(sym.CHARACTER, yytext());}
+<YYINITIAL>	"#"\\[0-9a-fA-F]+			{return new Symbol(sym.HEX_CHARACTER, yytext());}
+<YYINITIAL>	\'(.|\\t|\\n|\\\\|\\f|\')\'	{return new Symbol(sym.CHARACTER, yytext().substring(1, yytext().length() - 1));}
 
 /* Boolean */
 <YYINITIAL> 	"#"("t"|"f") 	{return new Symbol(sym.BOOLEAN, yytext());}

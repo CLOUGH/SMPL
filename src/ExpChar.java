@@ -2,26 +2,58 @@
     Campbell, Shane
 	Clough, Warren
 	Miller, Sean  */
-
 public class ExpChar extends Exp {
 
-    String str;
-
-    public ExpChar(String id) {
-		str = id;
+    private String stringVal;
+	private Character charVal;
+    
+    public ExpChar(String str) {
+		stringVal = str;
+		if(stringVal.length()>1){
+			switch(stringVal.charAt(1)){
+				case 'n':
+					charVal = '\n';
+					break;
+				case 'f':
+					charVal = '\f';
+					break;
+				case 't':
+					charVal = '\t';
+					break;
+				case '\\':
+					charVal = '\\';
+					break;
+				default:
+					charVal = null;
+					break;
+			}
+		}
+		else
+			charVal = stringVal.charAt(0);
+			
+		
+    }
+    public ExpChar(String str, boolean isHexChar){
+    	stringVal = str;
+		int intVal = Integer.parseInt(str.substring(2),16);
+		charVal = (char) intVal;
     }
 
-    public String getChar() {
-		return str;
+    public Character getChar() {
+		return charVal;
+    }
+    public String getMatchedString()
+    {
+    	return stringVal;
     }
 
     public Object visit(Visitor v, Object arg)
     throws Exception
     {
-	return v.visitExpChar(this, arg);
+		return v.visitExpChar(this, arg);
     }
 
     public String toString() {
-	return str;
+		return stringVal;
     }
 }
