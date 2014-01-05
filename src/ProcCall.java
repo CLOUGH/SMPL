@@ -7,32 +7,36 @@
 import java.util.*;
 
 public class ProcCall extends Exp {
+	
+	String procName;
+    Exp[] argExps;
 
-    Exp[] args;
-    Exp exp;
-
-    public ProcCall( Exp e, ExpSequence lst) {
-        ArrayList list = lst.getSeq();
-        args = (Exp[])list.toArray(new Exp[0]);
-        exp = e;
+    public ProcCall(String pn, ArrayList<Exp> args) {
+		procName = pn;
+		argExps = args.toArray(new Exp[args.size()]);;
     }
 
-    public Exp[] getList() {
-	return args;
+    public String getProcName() {
+		return procName;
     }
 
-    public Exp getProc() {
-	return exp;
+    public Exp[] getArgExps() {
+		return argExps;
     }
-
-    public Object visit(Visitor v, Object arg)
+    
+	public Object visit(Visitor v, Object arg)
 	throws Exception
     {
-	return v.visitProcCall(this, arg);
+		return v.visitProcCall(this, arg);
     }
-
     public String toString() {
-        return "ProcCall ("+args.toString() + ") : " + exp.toString();
+		String arguments = "";
+		if (argExps.length==0) {
+			arguments = argExps[0].toString();
+			for (int i = 1; i < argExps.length; i++)
+			arguments += ", " + argExps[i].toString();
+		}
+		return procName + "(" + arguments + ")";
     }
 }
 

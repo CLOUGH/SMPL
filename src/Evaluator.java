@@ -560,64 +560,37 @@ public class Evaluator implements Visitor {
     
     }
     public Object visitProcDef(ProcDef exp, Object arg) throws Exception {
-        exp.addEnv(arg);
+		exp.addEnv(arg);
         return exp;
     }
     public Object visitProcCall(ProcCall exp, Object arg) throws Exception {
-        Environment env = new Environment();
-		StmtSequence seq = new StmtSequence();
-      
-		Exp[] args;
-		String[] paras;
-      
-		ProcDef proc = (ProcDef) exp.getProc();
-		paras = proc.getParams();
-		args = exp.getList();
-		env = (Environment) proc.getEnv();
-		if(paras.length != args.length)
-		{
-			throw new Exception("Invalid Proc Call");
-		}
-		for(int i = 0;i<paras.length;i++)
-	    {
-			env.put(paras[i], args[i].visit(this, arg));
-			
-		}
-		
-		return proc.getExp().visit(this, env);
-
-    }
-    public Object visitVarProcCall(VarProcCall exp, Object arg) throws Exception {
         Environment env = new Environment();
         Environment curEnv = (Environment) arg;
 
 		Exp[] args;
 		String[] paras;
-		try
-		{
-		  ProcDef proc = (ProcDef) curEnv.get(exp.getVar());
-		  paras = proc.getParams();
-		  args = exp.getList();
-		  if(paras.length != args.length)
-		  {
-			  System.out.println("param : "+paras.length);
-			  System.out.println("args : "+args.length);
-			  throw new Exception("Invalid Var Proc Call");
-		  }
-		  for(int i = 0;i<paras.length;i++)
-		  {
+		
+	  	ProcDef proc = (ProcDef) curEnv.get(exp.getProcName());
+	  	paras = proc.getParams();
+	 	//args = exp.getList();
+	 	args = exp.getArgExps();
+	  	if(paras.length != args.length)
+	  	{
+		  System.out.println("param : "+paras.length);
+		  System.out.println("args : "+args.length);
+		  throw new Exception("Invalid Var Proc Call");
+	 	}
+	  	for(int i = 0;i<paras.length;i++)
+	  	{
 			env.put(paras[i], args[i].visit(this, arg));
 
-		  }
-		  //env = new HPLMacroBindings();
-		  return proc.getExp().visit(this, env);
-			}
-		  catch(Exception e)
-		  {
-			  System.out.println(e+" : Invalid Proc call 2");
-			  return null;
-		  }
-
+	  	}
+	  	//env = new HPLMacroBindings();
+	  	return proc.getExp().visit(this, env);
+		
+    }
+    public Object visitVarProcCall(VarProcCall exp, Object arg) throws Exception {
+        return null;
     }
     public Object visitExpPair(ExpPair exp, Object arg) throws Exception {
      

@@ -16,7 +16,9 @@ import java.util.*;
  */
 public class Environment {
 
-    HashMap dictionary;
+    HashMap dictionary;		//local bindings
+    Environment parent;		// parent enviroment
+    HashMap<String, ProcDef> functionTable;	// local table of functions
 
     /**
      * Create a new (empty) top level Environment.
@@ -27,6 +29,18 @@ public class Environment {
     }
     public Environment() {
 		dictionary = new HashMap();
+		parent = null;
+		functionTable = new HashMap<String, ProcDef>();
+    }
+    /**
+     * Create a new environment with an empty first frame, inheriting the
+     * bindings of the given environment.
+     *
+     */
+    public Environment(Environment p) {
+		dictionary = new HashMap();
+		parent = p;
+		functionTable = new HashMap<String, ProcDef>();
     }
 
     /**
@@ -39,8 +53,10 @@ public class Environment {
      * for the identifiers.  Note that the two arrays must
      * have the same length.
      */
-    public Environment(String[] ids, int[] values) {
+    public Environment(String[] ids, int[] values, Environment parent) {
 		dictionary = new HashMap();
+		this.parent = parent;
+		functionTable = new HashMap<String, ProcDef>();
 		for (int i = 0; i < ids.length; i++) {
 			put(ids[i], values[i]);
 		}
@@ -59,6 +75,10 @@ public class Environment {
 		return result;
     }
 
+	public void putFun(String name, ProcDef f) {
+		functionTable.put(name, f);
+    }
+    
     /**
      * Store a binding for the given identifier to the given
      * int within this environment.
@@ -69,6 +89,18 @@ public class Environment {
     public void put(String id, Object value) {
 		dictionary.put(id, value);
     }
+    
+    public ProcDef getFun(String name) throws Exception {
+		ProcDef result = functionTable.get(name);
+		if (result == null)
+			if (parent == null)
+			throw new Exception("Undefined function " + name);
+			else
+			return parent.getFun(name);
+		else
+			return result;
+    }
+
 
     /**
      * Return the int associated with the given identifier.
@@ -78,24 +110,17 @@ public class Environment {
      * this environment.
      * @exception Exception if <code>id</code> is unbound
      */
-    public Object get(String id) throws Exception {
-		Object result = (Object) dictionary.get(id);
-		if (result == null)
-			throw new Exception("Unbound variable " + id);
-		else
-			{
-				try
-				{
-					return result;
-				}
-				catch(Exception e)
-				{
-					return result;
-				}
-			 
-			}
-			
+   public Object get(String id) throws Exception {
+	Object result = (Object) dictionary.get(id);
+	if (result == null)
+	    if (parent == null)
+		throw new Exception("Unbound variable " + id);
+	    else
+		return parent.get(id);
+	else
+	    return result;
     }
+
     public HashMap getAll() throws Exception {
 
         return dictionary;
