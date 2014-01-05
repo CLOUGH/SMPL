@@ -136,16 +136,11 @@ non terminal ArrayList paramList;
 
 program ::= stmtList:s {:RESULT = new ArithProgram(s);  :};
 
-stmtList ::= stmtList:lst stmts:s {:
-		lst.add(s);
-		RESULT = lst;
-		:} |
-	     stmts:s {:
-		RESULT = new StmtSequence(s);
-		:};
+stmtList 		::= stmtList:lst stmts:s {:lst.add(s);RESULT = lst;:} |
+					stmts:s {:	RESULT = new StmtSequence(s); :};
 
 
-stmts ::= stmt:s SEMICOL{:RESULT = s;:};
+stmts 			::= stmt:s SEMICOL			{:RESULT = s;:};
 
 
 stmt 			::= definition:d 			{:RESULT = d;:} |
@@ -177,33 +172,21 @@ statement 		::= ifstat:ifst{:RESULT = ifst;:}
 					|SETFG LPAREN expression:e1 COMMA expression:e2 RPAREN {: RESULT = null; :}
 					|SETBG LPAREN expression:e1 COMMA expression:e2 RPAREN {: RESULT = null; :};
 
-procCall ::= LPAREN procDef:pd RPAREN LPAREN argList:lst RPAREN {:RESULT = new ProcCall(pd,lst);:}
-                |VARIABLE:v LPAREN argList:lst RPAREN {:RESULT = new VarProcCall(v,lst);:}|
-                CALL LPAREN expression:e COMMA argList:lst RPAREN {:RESULT = new SMPLCall(e,lst);:};
+procCall 	::= 	LPAREN procDef:pd RPAREN LPAREN argList:lst RPAREN {:RESULT = new ProcCall(pd,lst);:}
+                	|VARIABLE:v LPAREN argList:lst RPAREN {:RESULT = new VarProcCall(v,lst);:}|
+                	CALL LPAREN expression:e COMMA argList:lst RPAREN {:RESULT = new SMPLCall(e,lst);:};
 
-argList ::= argList:lst COMMA  stmt:e
-                    {:lst.add(e);
-                      RESULT = lst;:}|
-                    stmt:e {:RESULT = new ExpSequence(e);:} ;
+argList 	::= 	argList:lst COMMA  stmt:e	{:lst.add(e);RESULT = lst;:}|
+                    stmt:e 						{:RESULT = new ExpSequence(e);:} ;
 
-procDef ::= PROC LPAREN paramList:lst RPAREN stmt:e {:RESULT = new ProcDef(lst,e);:};
+procDef 	::= 	PROC LPAREN paramList:lst RPAREN stmt:e {:RESULT = new ProcDef(lst,e);:};
 
 
-paramList ::= paramList:params COMMA VARIABLE:v {:
-		params.add(v);
-		RESULT = params;:}
-		| VARIABLE:v {:
-		ArrayList lst = new ArrayList();
-                lst.add(v);
-                RESULT = lst;:};
+paramList 	::=		paramList:params COMMA VARIABLE:v {:params.add(v);RESULT = params;:}
+					|VARIABLE:v {:ArrayList lst = new ArrayList();lst.add(v);RESULT = lst;:};
 
-caseList ::= caseList:lst case:c {:
-		lst.add(c);
-		RESULT = lst;
-		:} |
-	     case:c {:
-		RESULT = new CaseSequence(c);
-		:};
+caseList 	::= 	caseList:lst case:c {:lst.add(c);RESULT = lst;:}|
+	     			case:c {:RESULT = new CaseSequence(c);:	};
 case ::= expression:p COLON expression:c {:RESULT = new Case(p,c);:}|ELSE COLON expression:c{:RESULT = new Case(new ExpBool("#t"),c);:};
 
 ifstat ::= 	IF expression:ifExp THEN expression:thenExp {: RESULT = new ExpIf(ifExp,thenExp);:} | 
