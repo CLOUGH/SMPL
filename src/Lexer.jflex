@@ -144,6 +144,7 @@ fnum  = (-[0-9]+\.[0-9]+)|([0-9]+\.[0-9]+)|([0-9]+\.[0-9]*)|([0-9]*\.[0-9]+)
 <YYINITIAL>	"eqv?"		{return new Symbol(sym.EQVQ);}
 <YYINITIAL>	"equal?"	{return new Symbol(sym.EQUALQ);}
 <YYINITIAL>	"substr"	{return new Symbol(sym.SUBSTR);}
+<YYINITIAL>     "size"          {return new Symbol(sym.SIZE);}
 
 /*Graphical keywords */
 <YYINITIAL>	"canvas"	{return new Symbol(sym.CANVAS);}

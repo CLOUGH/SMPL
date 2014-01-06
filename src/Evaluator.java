@@ -113,6 +113,7 @@ public class Evaluator implements Visitor {
     }
     public Object visitExpPath(ExpPath exp, Object arg) throws Exception
     {
+	
 	return null;
     }
 
@@ -627,6 +628,11 @@ public class Evaluator implements Visitor {
     public Object visitExpVector(ExpVector evect, Object arg) throws Exception {
 	return evect.toString();
     }
+    
+    public Object visitExpSize(ExpSize esize, Object arg) throws Exception {
+	return esize.getSize();
+    }
+
 
     public Environment visitLetDef(LetDef def, Object arg) throws Exception {
 
