@@ -277,9 +277,9 @@ builtin 	::= 		PAIR LPAREN expression:e1 COMMA expression:e2 RPAREN {: RESULT = 
                                 
            				EQUALQ LPAREN expression:e1 COMMA expression:e2 RPAREN{: RESULT = new SMPLEqualQ(e1,e2); :};
 
-listExp 	::= 		LIST LPAREN expList:el RPAREN {: RESULT =new ExpList(el); :}|
+listExp 	::= 		LIST LPAREN LBRACE expList:el RBRACE RPAREN {: RESULT =new ExpList(el); :}|
                                 LBRACE expList:el RBRACE {: RESULT = new ExpList(el); :}  |
-						LIST LPAREN RPAREN {: RESULT =new ExpList(); :};
+						LIST LPAREN LBRACE RBRACE RPAREN {: RESULT =new ExpList(); :};
 
 listVector      ::=		LBRACE COLON expList:el COLON RBRACE {: RESULT = new ExpVector(el); :} |
 			        LBRACE COLON COLON RBRACE {: RESULT = new ExpVector(); :};
