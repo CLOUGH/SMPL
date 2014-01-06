@@ -129,6 +129,7 @@ non terminal Exp k;
 non terminal Exp e;
 non terminal ArrayList paramList;
 non terminal ArrayList<Exp> expList;
+non terminal Exp listExp;
 
 
 
@@ -266,13 +267,14 @@ single 			::= 	INTEGER:ilit 			{: RESULT = new ExpLit(ilit); :} |
 builtin 	::= 		PAIR LPAREN expression:e1 COMMA expression:e2 RPAREN {: RESULT = new ExpPair(e1,e2); :}|
             			CAR LPAREN expression:e RPAREN{: RESULT = new ExpCar(e); :}|
             			CDR LPAREN expression:e RPAREN{: RESULT = new ExpCdr(e); :}|
-	    				LIST LPAREN expressionList:elist RPAREN {: RESULT = new ExpSequence(elist); :}|
+	    				listExp:l {: RESULT = l; :}|
             			PAIRQ LPAREN expression:e RPAREN{: RESULT = new ExpPairQ(e); :}|
             			EQVQ LPAREN expression:e1 COMMA expression:e2 RPAREN{: RESULT = new SMPLEqvQ(e1,e2); :}|
            				EQUALQ LPAREN expression:e1 COMMA expression:e2 RPAREN{: RESULT = new SMPLEqualQ(e1,e2); :};
 
-
-
+listExp 	::= 		LIST LPAREN expList:el RPAREN {: RESULT =new ExpList(el); :}|
+						LIST LPAREN RPAREN {: RESULT =new ExpList(); :};
+	
 
 
 
