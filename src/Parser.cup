@@ -131,6 +131,7 @@ non terminal ArrayList paramList;
 non terminal ArrayList<Exp> expList;
 non terminal Exp listVector;
 non terminal Exp listExp;
+non terminal Exp sizeVector;
 
 
 
@@ -272,9 +273,9 @@ builtin 	::= 		PAIR LPAREN expression:e1 COMMA expression:e2 RPAREN {: RESULT = 
             			CDR LPAREN expression:e RPAREN{: RESULT = new ExpCdr(e); :}|
 	    				listExp:l {: RESULT = l; :}|
 				listVector:vl {: RESULT = vl; :} |
+                                sizeVector:sv {: RESULT = sv; :} |
             			PAIRQ LPAREN LBRACE expression:e RBRACE RPAREN{: RESULT = new ExpPairQ(e); :}|
             			EQVQ LPAREN expression:e1 COMMA expression:e2 RPAREN{: RESULT = new SMPLEqvQ(e1,e2); :}|
-                                
            				EQUALQ LPAREN expression:e1 COMMA expression:e2 RPAREN{: RESULT = new SMPLEqualQ(e1,e2); :};
 
 listExp 	::= 		LIST LPAREN LBRACE expList:el RBRACE RPAREN {: RESULT =new ExpList(el); :}|
@@ -285,8 +286,12 @@ listVector      ::=		LBRACE COLON expList:el COLON RBRACE {: RESULT = new ExpVec
 			        LBRACE COLON COLON RBRACE {: RESULT = new ExpVector(); :};
 	
 
+sizeVector      ::=             SIZE LPAREN LBRACE COLON expList:el COLON RBRACE RPAREN {: RESULT = new ExpSize(el); :};
 
-
+//sizeVector        ::= 	          SIZE LPAREN listVector:lv RPAREN {: RESULT = new ExpSized(lv); :} |
+//				  SIZE LPAREN LBRACE COLON expList:el COLON RBRACE RPAREN {: RESULT = new ExpSized(el); :};
+				  
+                                
 
 
 

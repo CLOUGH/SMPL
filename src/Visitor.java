@@ -90,6 +90,8 @@ public interface Visitor {
          throws Exception;
     public Object visitExpVector(ExpVector exp, Object arg)
          throws Exception;
+    public Object visitExpSize(ExpSize exp, Object arg)
+         throws Exception;
     public Object visitExpCanvas(ExpCanvas exp, Object arg)
 	 throws Exception;
     public Object visitExpRect(ExpRect exp, Object arg)

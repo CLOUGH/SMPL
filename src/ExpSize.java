@@ -5,16 +5,16 @@
 
 import java.util.*;
 
-public class ExpVector extends Exp {
+public class ExpSize extends Exp {
 
     ArrayList explist;
 
-    public ExpVector()
+    public ExpSize()
     {
 	explist = new ArrayList();
     }
 
-    public ExpVector(ArrayList args) {
+    public ExpSize(ArrayList args) {
 		explist = args;
     }
 
@@ -27,29 +27,18 @@ public class ExpVector extends Exp {
 	return explist.size();
     }
 
-    public ExpVector add(Statement s) {
-	explist.add(s);
-	return this;
-    }
+   
 
     
     
 
     public Object visit(Visitor v, Object arg) throws Exception
     {
-    	return v.visitExpVector(this, arg);
+    	return v.visitExpSize(this, arg);
     }
 
     public String toString() {
-	Iterator iter = explist.iterator();
-
-	String result = "[:";
-	while (iter.hasNext()) {
-	    result = result +  iter.next().toString() ;
-	    result = result + (iter.hasNext() ? ",": "");
-	}
-	result = result + ":]";
-	return result;
+	return ""+getSize();
     }
 }
 
