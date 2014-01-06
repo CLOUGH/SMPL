@@ -14,9 +14,8 @@ public class ExpList extends Exp {
 	explist = new ArrayList();
     }
 
-    public ExpList(Statement s) {
-	this();
-	explist.add(s);
+    public ExpList(ArrayList<Exp> args) {
+		explist = args;
     }
 
     public ArrayList getExpList() {
@@ -39,11 +38,12 @@ public class ExpList extends Exp {
     public String toString() {
 	Iterator iter = explist.iterator();
 
-	String result = "";
+	String result = "[";
 	while (iter.hasNext()) {
-	    result = result + iter.next().toString() + "\n";
+	    result = result +  iter.next().toString() ;
+	    result = result + (iter.hasNext() ? ",": "");
 	}
-
+	result = result + "]";
 	return result;
     }
 }

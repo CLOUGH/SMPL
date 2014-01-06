@@ -521,7 +521,7 @@ public class Evaluator implements Visitor {
     }
 
     public Object visitExpList(ExpList elist, Object arg) throws Exception {
-    	return null;
+    	return elist.toString();
     }
 
     public Environment visitLetDef(LetDef def, Object arg) throws Exception {
