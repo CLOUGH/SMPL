@@ -201,7 +201,7 @@ procDef 	::= 	PROC LPAREN paramList:lst RPAREN stmt:e {:RESULT = new ProcDef(lst
 paramList 	::=		paramList:params COMMA VARIABLE:v {:params.add(v);RESULT = params;:}
 					|VARIABLE:v {:ArrayList lst = new ArrayList();lst.add(v);RESULT = lst;:};
 
-caseList 	::= 	caseList:lst case:c {:lst.add(c);RESULT = lst;:}|
+caseList 	::= 	caseList:lst COMMA case:c {:lst.add(c);RESULT = lst;:}|
 	     			case:c {:RESULT = new CaseSequence(c);:};
 case 		::= 	expression:p COLON expression:c {:RESULT = new Case(p,c);:}|
 					ELSE COLON expression:c{:RESULT = new Case(new ExpBool("#t"),c);:};
