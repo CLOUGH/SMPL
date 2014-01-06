@@ -22,13 +22,15 @@ public class ProcDef extends Exp {
     }
 
     public Exp getExp() {
-	return exp;
+		return exp;
     }
     public void addEnv(Object arg) {
-	env = (Environment) arg;
+    	
+		env = (Environment) arg;
+		System.out.println(env);
     }
     public Environment getEnv() {
-	return env;
+		return env;
     }
     public Object visit(Visitor v, Object arg)
 	throws Exception

@@ -555,6 +555,7 @@ public class Evaluator implements Visitor {
         env = (Environment) exp.getList().visit(this, arg);
         
         Object result = exp.getExpR().visit(this, env);
+        System.out.println("Reached ExpLet");
         return result;
 
     
@@ -582,11 +583,11 @@ public class Evaluator implements Visitor {
 	 	}
 	  	for(int i = 0;i<paras.length;i++)
 	  	{
-			env.put(paras[i], args[i].visit(this, arg));
+			curEnv.put(paras[i], args[i].visit(this, arg));
 
 	  	}
 	  	//env = new HPLMacroBindings();
-	  	return proc.getExp().visit(this, env);
+	  	return proc.getExp().visit(this, curEnv);
 		
     }
     public Object visitVarProcCall(VarProcCall exp, Object arg) throws Exception {

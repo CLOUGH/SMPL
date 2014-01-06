@@ -132,11 +132,12 @@ public class Environment {
      *         environment.
      */
     public String toString() {
+    	System.out.println("Environment variables: ");
 		StringBuffer result = new StringBuffer();
 
 		Iterator iter = dictionary.keySet().iterator();
 		while (iter.hasNext()) {
-			result = result.append(iter.next().toString());
+			result = result.append(iter.next().toString()+",");
 		}
 		return result.toString();
     }
