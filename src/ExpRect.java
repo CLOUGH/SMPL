@@ -8,7 +8,7 @@ public class ExpRect extends Exp {
      Exp ycord;
      Exp canvas;
     
-     public ExpRect(Exp x, Exp y, Exp can)
+     public ExpRect(Exp can, Exp x, Exp y)
      {
 	xcord = x;
 	ycord = y;

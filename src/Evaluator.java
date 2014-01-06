@@ -30,11 +30,7 @@ public class Evaluator implements Visitor {
 		return result;
     }
 
-    public void paint(Graphics g) {
-    	g.setColor(Color.green);
-        g.drawString("hello",40,30);
-	frame.repaint();
-    }
+    
 
     public Object visitExpCanvas(ExpCanvas exp, Object arg) throws Exception
     {
@@ -44,7 +40,7 @@ public class Evaluator implements Visitor {
         frame.setSize(new Dimension(wid, hgt));
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
-        return null;
+        return frame;
     }
 
    
@@ -66,7 +62,7 @@ public class Evaluator implements Visitor {
         JPanel panel = new JPanel() {
             public void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                g.drawRect(x,y,wid,hgt);
+                g.drawRect(x,y,wid/2,hgt/2);
             }
         };
         
@@ -74,6 +70,42 @@ public class Evaluator implements Visitor {
         frame.validate();
         frame.repaint();
         return null;
+    }
+
+    public Object visitExpPt(ExpPt exp, Object arg) throws Exception
+    {
+	return exp;
+    }
+
+    public Object visitExpCircle(ExpCircle exp, Object arg) throws Exception
+    {
+ 	final int x, y, hgt, wid, radius;
+	radius = (Integer) exp.getNumber().visit(this, arg);
+	ExpPt coordinates = (ExpPt) exp.getCoords();
+	x = (Integer) coordinates.getPointX().visit(this, arg);
+	y = (Integer) coordinates.getPointY().visit(this, arg);
+
+	ExpPair canv = (ExpPair) exp.getCanvas();
+        
+        
+        hgt = (Integer) canv.getExpL().visit(this, arg);
+        wid = (Integer) canv.getExpR().visit(this, arg);
+
+	frame.setSize(new Dimension(wid, hgt));
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setVisible(true);
+        JPanel panel = new JPanel() {
+            public void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                g.drawOval(x,y,radius, radius);
+            }
+        };
+        
+        frame.add(panel);
+        frame.validate();
+        frame.repaint();
+        return null;
+	
     }
 
     public Object visitStatement(Statement s, Object arg)

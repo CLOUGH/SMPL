@@ -92,6 +92,10 @@ public interface Visitor {
 	 throws Exception;
     public Object visitExpRect(ExpRect exp, Object arg)
 	 throws Exception;
+    public Object visitExpPt(ExpPt exp, Object arg)
+	 throws Exception;
+    public Object visitExpCircle(ExpCircle exp, Object arg)
+	 throws Exception;
     public Object visitExpCdr(ExpCdr exp, Object arg)
          throws Exception;
     public Object visitExpPairQ(ExpPairQ exp, Object arg)

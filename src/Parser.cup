@@ -162,9 +162,9 @@ statement 		::= ifstat:ifst{:RESULT = ifst;:}
                 	|procDef:pd {:RESULT = pd;:}
 					//|procCall:pc {:RESULT = pc;:}
 					|CANVAS LPAREN expression:e1 COMMA expression:e2 RPAREN {: RESULT = new ExpCanvas(e1,e2); :}
-					|PT LPAREN expression:e1 COMMA expression:e2 RPAREN {: RESULT = null; :}
+					|PT LPAREN expression:e1 COMMA expression:e2 RPAREN {: RESULT = new ExpPt(e1,e2); :}
 					|RECT LPAREN expression:e1 COMMA expression:e2 COMMA expression:e3 RPAREN {: RESULT = new ExpRect(e1,e2,e3); :}
-					|CIRCLE LPAREN expression:e1 COMMA expression:e2 COMMA expression:e3 RPAREN {: RESULT = null; :}
+					|CIRCLE LPAREN expression:e1 COMMA expression:e2 COMMA expression:e3 RPAREN {: RESULT = new ExpCircle(e1,e2,e3); :}
 					//{: RESULT = new ExpCircle(e1,e2,e3); :};
 					|PATH LPAREN expression:e1 COMMA expression:e2 RPAREN {: RESULT = null; :}
                 	|CPATH LPAREN expression:e1 COMMA expression:e2 RPAREN {: RESULT = null; :}
