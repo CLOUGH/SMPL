@@ -5,3 +5,6 @@
 #Linux previous version files #
 ###############################
 *~
+src/Parser.java
+src/sym.java
+src/Lexer.java
