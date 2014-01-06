@@ -23,7 +23,8 @@ public class ExpCanvas extends Exp {
 	return v.visitExpCanvas(this, arg);
     }
     public String toString() {
-	return "Canvas created with width: "+width.toString()+" height: "+height.toString();
+	return "("+width.toString()+","+height.toString()+")";
+	
     }
 
 	

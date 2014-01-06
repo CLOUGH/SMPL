@@ -10,6 +10,7 @@ import java.awt.Graphics;
 import java.awt.*;
 
 import javax.swing.*;
+import javax.swing.text.*;
 //import java.swing.JFrame;
 //import javax.swing.SwingUtilities;
 
@@ -40,7 +41,7 @@ public class Evaluator implements Visitor {
         frame.setSize(new Dimension(wid, hgt));
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
-        return frame;
+        return exp;
     }
 
    
@@ -48,6 +49,7 @@ public class Evaluator implements Visitor {
     public Object visitExpRect(ExpRect exp, Object arg) throws Exception
     {
 	final int x, y, hgt, wid;
+        Environment env = (Environment) arg;
         x = (Integer) exp.getX().visit(this, arg);
         y = (Integer) exp.getY().visit(this, arg);
         ExpPair canv = (ExpPair) exp.getCanvas();
@@ -69,6 +71,7 @@ public class Evaluator implements Visitor {
         frame.add(panel);
         frame.validate();
         frame.repaint();
+        env.put("frame0", frame);
         return null;
     }
 
@@ -81,9 +84,9 @@ public class Evaluator implements Visitor {
     {
  	final int x, y, hgt, wid, radius;
 	radius = (Integer) exp.getNumber().visit(this, arg);
-	ExpPt coordinates = (ExpPt) exp.getCoords();
-	x = (Integer) coordinates.getPointX().visit(this, arg);
-	y = (Integer) coordinates.getPointY().visit(this, arg);
+	ExpPair coordinates = (ExpPair) exp.getCanvas();
+	x = (Integer) coordinates.getExpL().visit(this, arg);
+	y = (Integer) coordinates.getExpL().visit(this, arg);
 
 	ExpPair canv = (ExpPair) exp.getCanvas();
         
@@ -104,8 +107,73 @@ public class Evaluator implements Visitor {
         frame.add(panel);
         frame.validate();
         frame.repaint();
+        
         return null;
 	
+    }
+    public Object visitExpPath(ExpPath exp, Object arg) throws Exception
+    {
+	return null;
+    }
+
+    public Object visitExpCPath(ExpCPath exp, Object arg) throws Exception
+    {
+	return null;
+    }
+
+    public Object visitExpClear(ExpClear exp, Object arg) throws Exception
+    {
+	//Object result = null;
+	Environment env = (Environment) arg;
+	//frame.setVisible(true);
+	frame.getContentPane().removeAll();
+        //frame.dispose();
+	//frame.removeAll();
+	//result = env.get("frame0").getContentPane().getWidth();
+	return null;
+    }
+
+    public Object visitExpBg(ExpBg exp, Object arg) throws Exception
+    {
+        int hgt, wid, r, g, b;
+	//ExpVector vexp = (ExpVector) exp.getVector();
+        ExpPair canv = (ExpPair) exp.getCanvas();
+
+	hgt = (Integer) canv.getExpL().visit(this, arg);
+        wid = (Integer) canv.getExpR().visit(this, arg);
+        Color mycolor = new Color(200,200,100);
+        frame.getContentPane().setBackground(mycolor);
+	frame.setSize(new Dimension(wid, hgt));
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setVisible(true);
+	return null;
+    }
+
+    public Object visitExpFg(ExpFg exp, Object arg) throws Exception
+    {
+	int hgt, wid, r, g, b;
+	//ExpVector vexp = (ExpVector) exp.getVector();
+	JTextPane textPane = new JTextPane();
+    	StyledDocument doc = (StyledDocument) textPane.getDocument();
+
+	ExpPair canv = (ExpPair) exp.getCanvas();
+
+	hgt = (Integer) canv.getExpL().visit(this, arg);
+        wid = (Integer) canv.getExpR().visit(this, arg);
+
+    	// Create a style object and then set the style attributes
+    	Style style = doc.addStyle("StyleName", null);
+
+	Color mycolor = new Color(230,250,120);
+    	StyleConstants.setForeground(style, mycolor);
+
+    	// Append to document
+    	doc.insertString(doc.getLength(), "The World is ours, Clough, Stewart, Miller, Campbell", style);
+        frame.setSize(new Dimension(wid, hgt));
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setVisible(true);
+	frame.add(textPane);
+	return null;
     }
 
     public Object visitStatement(Statement s, Object arg)
@@ -554,6 +622,10 @@ public class Evaluator implements Visitor {
 
     public Object visitExpList(ExpList elist, Object arg) throws Exception {
     	return elist.toString();
+    }
+
+    public Object visitExpVector(ExpVector evect, Object arg) throws Exception {
+	return evect.toString();
     }
 
     public Environment visitLetDef(LetDef def, Object arg) throws Exception {

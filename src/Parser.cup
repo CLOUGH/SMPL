@@ -129,6 +129,7 @@ non terminal Exp k;
 non terminal Exp e;
 non terminal ArrayList paramList;
 non terminal ArrayList<Exp> expList;
+non terminal Exp listVector;
 non terminal Exp listExp;
 
 
@@ -169,9 +170,9 @@ statement 		::= ifstat:ifst{:RESULT = ifst;:}
 					//{: RESULT = new ExpCircle(e1,e2,e3); :};
 					|PATH LPAREN expression:e1 COMMA expression:e2 RPAREN {: RESULT = null; :}
                 	|CPATH LPAREN expression:e1 COMMA expression:e2 RPAREN {: RESULT = null; :}
-					|CLEAR LPAREN expression:e RPAREN {: RESULT = null; :}
-					|SETFG LPAREN expression:e1 COMMA expression:e2 RPAREN {: RESULT = null; :}
-					|SETBG LPAREN expression:e1 COMMA expression:e2 RPAREN {: RESULT = null; :};
+					|CLEAR LPAREN expression:e RPAREN {: RESULT = new ExpClear(e); :}
+					|SETFG LPAREN expression:e1 COMMA expression:e2 RPAREN {: RESULT = new ExpFg(e1,e2); :}
+					|SETBG LPAREN expression:e1 COMMA expression:e2 RPAREN {: RESULT = new ExpBg(e1,e2); :};
 
 //procCall 	::= 	LPAREN procDef:pd RPAREN LPAREN argList:lst RPAREN {:RESULT = new ProcCall(pd,lst);:}|
 	//				VARIABLE:v LPAREN argList:lst RPAREN {:RESULT = new VarProcCall(v,lst);:}|
@@ -186,6 +187,8 @@ procCall 	::= 	VARIABLE:v LPAREN expList:args RPAREN {:RESULT = new ProcCall(v, 
 	   				
 expList 	::= 	expList:lst COMMA expression:e {: lst.add(e);RESULT = lst; :}|
 	    			expression:e {:ArrayList<Exp> lst = new ArrayList<Exp>();lst.add(e);RESULT = lst;   :};
+
+
 
 
 	    			
@@ -268,12 +271,17 @@ builtin 	::= 		PAIR LPAREN expression:e1 COMMA expression:e2 RPAREN {: RESULT = 
             			CAR LPAREN expression:e RPAREN{: RESULT = new ExpCar(e); :}|
             			CDR LPAREN expression:e RPAREN{: RESULT = new ExpCdr(e); :}|
 	    				listExp:l {: RESULT = l; :}|
+				listVector:vl {: RESULT = vl; :} |
             			PAIRQ LPAREN expression:e RPAREN{: RESULT = new ExpPairQ(e); :}|
             			EQVQ LPAREN expression:e1 COMMA expression:e2 RPAREN{: RESULT = new SMPLEqvQ(e1,e2); :}|
+                                
            				EQUALQ LPAREN expression:e1 COMMA expression:e2 RPAREN{: RESULT = new SMPLEqualQ(e1,e2); :};
 
 listExp 	::= 		LIST LPAREN expList:el RPAREN {: RESULT =new ExpList(el); :}|
 						LIST LPAREN RPAREN {: RESULT =new ExpList(); :};
+
+listVector      ::=		LBRACE COLON expList:el COLON RBRACE {: RESULT = new ExpVector(el); :} |
+			        LBRACE COLON COLON RBRACE {: RESULT = new ExpVector(); :};
 	
 
 

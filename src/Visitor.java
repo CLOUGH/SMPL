@@ -88,6 +88,8 @@ public interface Visitor {
          throws Exception;
     public Object visitExpList(ExpList exp, Object arg)
          throws Exception;
+    public Object visitExpVector(ExpVector exp, Object arg)
+         throws Exception;
     public Object visitExpCanvas(ExpCanvas exp, Object arg)
 	 throws Exception;
     public Object visitExpRect(ExpRect exp, Object arg)
@@ -96,6 +98,16 @@ public interface Visitor {
 	 throws Exception;
     public Object visitExpCircle(ExpCircle exp, Object arg)
 	 throws Exception;
+    public Object visitExpPath(ExpPath exp, Object arg)
+	 throws Exception;
+    public Object visitExpCPath(ExpCPath exp, Object arg)
+	 throws Exception;
+    public Object visitExpClear(ExpClear exp, Object arg)
+	 throws Exception; 
+    public Object visitExpBg(ExpBg exp, Object arg)
+         throws Exception;
+    public Object visitExpFg(ExpFg exp, Object arg)
+         throws Exception;
     public Object visitExpCdr(ExpCdr exp, Object arg)
          throws Exception;
     public Object visitExpPairQ(ExpPairQ exp, Object arg)
